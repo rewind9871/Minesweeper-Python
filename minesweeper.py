@@ -57,7 +57,6 @@ class Minesweeper:
         win_return = self.win_dialog.update(events)
         if (self.smile_button.update(events) == 1 or
                 win_return == 1):
-            print("RESTARTING GAME")
             self.running = 0
             self.dead = 0
             self.win = 0
@@ -84,6 +83,9 @@ class Minesweeper:
             self.win = 1
             self.win_dialog.setTime()
 
+    def preview_adjacent(self, on, index):
+        """Preview 8 adjacent tiles to index, on determines on or off"""
+        self.grid.preview_adjacent(on, index)
 
 if __name__=='__main__':
     ms=Minesweeper()

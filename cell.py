@@ -139,28 +139,28 @@ class Cell(Sprite):
                 for gap in self.gaps:
                     self.click_cell(event, gap)
             if event.type == pygame.MOUSEBUTTONUP:
-                if (self.mainrect.collidepoint(event.pos) and 
-                        self.clicked == 1 and 
-                        self.flagged == 0):
-                    self.hide_cell()
+                self.hide_cell(event, self.mainrect)
                 for gap in self.gaps:
-                    if (gap.collidepoint(event.pos) and 
-                            self.clicked == 1 and 
-                            self.flagged == 0):
-                        self.hide_cell()
+                    self.hide_cell(event, gap)
                 self.clicked = 0
 
-    def hide_cell(self):
-        self.hidden = 1
-        self.minesweeper.generate(self.id)
-        if self.hidden_value == 0:
-            self.minesweeper.clear_adjacent(self.id)
-        elif self.hidden_value == -1:
-            self.minesweeper.game_over(self.id)
-        if self.hidden_value > -1:
-            self.minesweeper.check_win()
+    def hide_cell(self, event, obj):
+        if (obj.collidepoint(event.pos) and 
+                self.clicked == 1 and 
+                self.flagged == 0):
+            self.hidden = 1
+            self.minesweeper.generate(self.id)
+            if self.hidden_value == 0:
+                self.minesweeper.clear_adjacent(self.id)
+            elif self.hidden_value == -1:
+                self.minesweeper.game_over(self.id)
+            if self.hidden_value > -1:
+                self.minesweeper.check_win()
+                self.minesweeper.preview_adjacent(0, self.id)
 
     def click_cell(self, event, obj):
+        if not obj.collidepoint(event.pos):
+            return
         if (obj.collidepoint(event.pos) and 
                 event.button == 1):
             self.clicked = 1
@@ -169,8 +169,11 @@ class Cell(Sprite):
                 self.hidden == 0):
             self.flagged = self.flagged ^ 1
             self.minesweeper.counter.update_counter(1-(2*self.flagged))
-        elif self.hidden == 1 and self.hidden_value > 0:
-            pass
+        if (obj.collidepoint(event.pos) and 
+                self.hidden == 1 and 
+                self.hidden_value > 0):
+            #Hold down 8 adjacent tiles
+            self.minesweeper.preview_adjacent(1, self.id)
 
     def update_value(self, val):
         self.hidden_value = val
