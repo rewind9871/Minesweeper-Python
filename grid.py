@@ -107,8 +107,6 @@ class Grid:
         for cell in self.cells_arr:
             if cell.hidden == 1:
                 num_cleared += 1
-
-        print(f"Num cleared: {num_cleared}\nBomb Count: {self.settings.bomb_count}")
         
         if num_cleared == self.settings.grid_count - self.settings.bomb_count:
             return 1
@@ -122,3 +120,42 @@ class Grid:
                     cell.clicked_mine = 1
             elif cell.flagged == 1 and cell.hidden_value != -1:
                 cell.wrong_flag = 1
+
+    def preview_adjacent(self, on, index):
+        offset = self.settings.grid_rows
+
+        #adjacent_inds includes self to handle row adjacency with modulus
+        adjacent_inds = (index-offset-1,  index-offset,  index-offset+1,
+                         index-1,         index,         index+1,
+                         index+offset-1,  index+offset,  index+offset+1)
+        
+        current_row = -2
+        adj_flagged = 0
+        for loop, ind in enumerate(adjacent_inds):
+            if loop%3 == 0:
+                current_row += 1
+            #Skip if ajacent index is out of bounds, on a different row, itself, or already cleared
+            if (ind < 0 or ind >= self.settings.grid_count or
+                    ind//offset != (index//offset)+current_row or
+                    ind == index or
+                    self.cells_arr[ind].hidden == 1):
+                continue
+            self.cells_arr[ind].clicked = on
+            if on == 0 and self.cells_arr[ind].flagged == 1:
+                adj_flagged += 1
+        
+        if on == 0 and adj_flagged >= self.cells_arr[index].hidden_value:
+            current_row = -2
+            for loop, ind in enumerate(adjacent_inds):
+                if loop%3 == 0:
+                    current_row += 1
+                #Skip if ajacent index is out of bounds, on a different row, itself, flagged, or already cleared
+                if (ind < 0 or ind >= self.settings.grid_count or
+                        ind//offset != (index//offset)+current_row or
+                        ind == index or
+                        self.cells_arr[ind].flagged == 1 or
+                        self.cells_arr[ind].hidden == 1):
+                    continue
+                self.cells_arr[ind].hidden = 1
+                if self.cells_arr[ind].hidden_value == 0:
+                    self.clear_adjacent(ind)
