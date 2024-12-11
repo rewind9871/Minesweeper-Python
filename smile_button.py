@@ -1,4 +1,6 @@
 import pygame
+import sys
+import os
 
 class SmileButton():
     """Button for restarting the game"""
@@ -7,7 +9,10 @@ class SmileButton():
         self.settings = minesweeper.settings
         self.screen = minesweeper.screen
 
-        self.image = pygame.image.load("images/Smile.png")
+        if getattr(sys, 'frozen', False):
+            self.image = pygame.image.load(os.path.join(sys._MEIPASS, "images", "Smile.png"))
+        else:
+            self.image = pygame.image.load("images/Smile.png")
         self.rect = self.image.get_rect()
 
         self.rect.midtop = minesweeper.screen.get_rect().midtop

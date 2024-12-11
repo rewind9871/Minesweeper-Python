@@ -1,4 +1,6 @@
 import pygame
+import sys
+import os
 
 class Counter:
     """Counter to track how many bombs are left in the game"""
@@ -19,7 +21,10 @@ class Counter:
         self.rect.x += 5
         self.rect.y += 5
 
-        self.font = pygame.font.SysFont("DS-Digital", self.settings.counter_font_size)
+        if getattr(sys, 'frozen', False):
+            self.font = pygame.font.Font(os.path.join(sys._MEIPASS, "fonts", "digitalism.ttf"), self.settings.counter_font_size)
+        else:
+            self.font = pygame.font.Font(os.path.join("fonts", "digitalism.ttf"), self.settings.counter_font_size)
 
     def draw_counter(self):
         """Draw the counter"""
@@ -27,7 +32,9 @@ class Counter:
         text = self.font.render(str(self.count), True, self.font_color)
 
         font_rect = text.get_rect()
-        font_rect.midright=self.rect.midright
+        font_rect.midright = self.rect.midright
+        font_rect.y += self.height/10
+        font_rect.x -= 3
         self.screen.blit(text, font_rect)
 
     def update_counter(self, increment):

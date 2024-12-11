@@ -5,7 +5,7 @@ class Settings:
         self.screen_width=900
         self.screen_height=1250
 
-        self.bomb_count=98
+        self.bomb_count=104
         self.grid_columns=16
         self.grid_rows=30
         self.grid_count=self.grid_columns*self.grid_rows
@@ -25,9 +25,9 @@ class Settings:
 
         self.counter_bg_color='black'
         self.counter_font_color='red'
-        self.counter_width=100
+        self.counter_width=80
         self.counter_height=50
-        self.counter_font_size=45
+        self.counter_font_size=50
 
         self.dialog_width = 600
         self.dialog_height = 200

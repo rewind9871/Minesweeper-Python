@@ -1,4 +1,6 @@
 import pygame
+import os
+import sys
 from pygame.sprite import Sprite
 
 class Cell(Sprite):
@@ -75,15 +77,24 @@ class Cell(Sprite):
             (x,y)
         ]
 
-        self.flag = pygame.image.load('images/Flag.png')
+        if getattr(sys, 'frozen', False):
+            self.flag = pygame.image.load(os.path.join(sys._MEIPASS, "images", "Flag.png"))
+        else:
+            self.flag = pygame.image.load('images/Flag.png')
         self.flag = pygame.transform.scale(self.flag, 
-                (self.width-10, self.height-10))
+                    (self.width-10, self.height-10))
         self.flag_rect = self.flag.get_rect()
-        self.flag_rect.center = self.mainrect.center
+        self.flag_rect.center = self.mainrect.center\
+        
+        if getattr(sys, 'frozen', False):
+            self.font = pygame.font.Font(os.path.join(sys._MEIPASS, "fonts", "MotionControl-Bold.otf"), self.settings.cell_font_size)
+        else:
+            self.font = pygame.font.Font(os.path.join("fonts", "MotionControl-Bold.otf"), self.settings.cell_font_size)
 
-        self.font = pygame.font.SysFont("Motion-Control", self.settings.cell_font_size)
-
-        self.bomb = pygame.image.load("images/Bomb.png")
+        if getattr(sys, 'frozen', False):
+            self.bomb = pygame.image.load(os.path.join(sys._MEIPASS, "images", "Bomb.png"))
+        else:
+            self.bomb = pygame.image.load("images/Bomb.png")
         self.bomb = pygame.transform.scale(self.bomb, 
                 (self.width-10, self.height-10))
         self.bomb_rect = self.bomb.get_rect()
@@ -171,6 +182,7 @@ class Cell(Sprite):
             self.minesweeper.counter.update_counter(1-(2*self.flagged))
         if (obj.collidepoint(event.pos) and 
                 self.hidden == 1 and 
+                event.button == 1 and
                 self.hidden_value > 0):
             #Hold down 8 adjacent tiles
             self.minesweeper.preview_adjacent(1, self.id)
