@@ -182,7 +182,6 @@ class Cell(Sprite):
             self.minesweeper.counter.update_counter(1-(2*self.flagged))
         if (obj.collidepoint(event.pos) and 
                 self.hidden == 1 and 
-                event.button == 1 and
                 self.hidden_value > 0):
             #Hold down 8 adjacent tiles
             self.minesweeper.preview_adjacent(1, self.id)
